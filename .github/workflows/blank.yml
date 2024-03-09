@@ -1,0 +1,29 @@
+name: Rclone
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */4 * * *"
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    
+    steps:
+    - name: Install rclone
+      run: |
+        sudo -v
+        curl https://rclone.org/install.sh | sudo bash
+
+    - name: Set up rclone config
+      run: |
+        sudo cat <<EOF>> $(rclone config file | tail -n 1)
+
+        ${{ secrets.CONFIG }}
+
+        EOF
+
+    - name: Run rclone command
+      run: |
+        ${{ secrets.COMMAND }}
